@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>تحدي الحروف</title>
+<style>
+:root{
+  --bg:#050b14;--panel:#0b1728;--panel2:#102238;--text:#f8fbff;--muted:#a8b6c9;
+  --gold:#f7d774;--gold2:#d8aa35;--green:#22c55e;--green2:#0f8c43;
+  --red:#ef3340;--red2:#ad1220;--blue:#38bdf8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Tahoma,Arial,sans-serif;background:
+radial-gradient(circle at 50% -20%,#173e74 0,transparent 36%),
+linear-gradient(145deg,#030711,#07111f 56%,#040914);color:var(--text)}
+button,input{font:inherit} button{cursor:pointer}
+.hidden{display:none!important}
+.app{min-height:100dvh;padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
+.shell{max-width:1200px;margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.brand{font-weight:1000;font-size:clamp(22px,4vw,42px);color:var(--gold);text-shadow:0 0 18px #f3c84c44}
+.badge{padding:7px 11px;border-radius:999px;background:#0d2138;border:1px solid #284a6b;font-weight:900;font-size:13px}
+.card{background:linear-gradient(180deg,#0d1b2fee,#091423ee);border:1px solid #29415d;border-radius:22px;padding:16px;box-shadow:0 18px 50px #0008}
+.hero{text-align:center;padding:34px 18px;margin-top:6vh}
+.hero h1{font-size:clamp(42px,8vw,78px);margin:0;color:var(--gold)}
+.hero p{color:var(--muted);line-height:1.9;font-size:17px;max-width:760px;margin:12px auto 22px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.center{justify-content:center}.grow>*{flex:1;min-width:180px}
+.btn{border:0;border-radius:15px;padding:13px 18px;font-weight:1000;color:white;background:#18314f}
+.btn.primary{background:linear-gradient(135deg,#f6c84c,#d79a1e);color:#142033}
+.btn.green{background:linear-gradient(135deg,#22c55e,#12813e)}
+.btn.red{background:linear-gradient(135deg,#ef3340,#aa1420)}
+.btn.blue{background:linear-gradient(135deg,#2563eb,#0ea5e9)}
+.btn.ghost{border:1px solid #33506f;background:#102238}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-radius:14px;padding:13px 14px;font-size:18px;text-align:center}
+.room-code{text-align:center;font-size:clamp(44px,8vw,86px);font-weight:1000;letter-spacing:.18em;color:var(--gold);margin:4px 0}
+.note{color:var(--muted);font-size:14px;line-height:1.7}
+.join{max-width:560px;margin:8vh auto}
+.join label{display:block;margin:12px 0 7px;font-weight:900}
+.game{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:12px;align-items:start}
+.board-card{position:relative;overflow:hidden;padding:12px}
+.scorebar{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}
+.score{flex:1;text-align:center;border-radius:14px;padding:8px 10px;font-weight:1000;border:1px solid #344f70;background:#0b1b30}
+.score.green{border-color:#28d96e;color:#85f4ad}.score.red{border-color:#ff4450;color:#ff9aa1}
+.board-wrap{position:relative;margin:auto;width:min(100%,760px);padding:28px 42px}
+.edge-top,.edge-bottom{position:absolute;left:52px;right:52px;height:17px;background:linear-gradient(180deg,#39ef79,#0c963f);border:2px solid #63ff96;box-shadow:0 0 18px #22c55e88;z-index:0}
+.edge-top{top:5px}.edge-bottom{bottom:5px}
+.edge-left,.edge-right{position:absolute;top:33px;bottom:33px;width:17px;background:linear-gradient(90deg,#ff4250,#b71020);border:2px solid #ff6670;box-shadow:0 0 18px #ef334088;z-index:0}
+.edge-left{left:8px}.edge-right{right:8px}
+.board{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.hex-row{display:flex;justify-content:center;gap:4px;margin-top:-8px}
+.hex-row:first-child{margin-top:0}
+.hex-row:nth-child(even){transform:translateX(45px)}
+.hex{
+  width:88px;height:76px;border:0;clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%);
+  background:linear-gradient(145deg,#fff2a6,#d8ac3b 62%,#9c741c);
+  color:#342400;font-size:34px;font-weight:1000;display:flex;align-items:center;justify-content:center;
+  text-shadow:0 1px 0 #fff8;box-shadow:inset 0 0 0 3px #7d5d1c;
+  transition:.18s transform,.18s filter,.18s background;
+}
+.host .hex.neutral:hover{transform:scale(1.06);filter:brightness(1.12)}
+.hex.green{background:linear-gradient(145deg,#55f28c,#10a94d 60%,#086c31);color:white;text-shadow:0 2px 3px #063}
+.hex.red{background:linear-gradient(145deg,#ff5b66,#d91e2e 60%,#8c0e18);color:white;text-shadow:0 2px 3px #500}
+.hex.selected{filter:brightness(1.35);outline:4px solid #fff;outline-offset:-8px}
+.side{display:flex;flex-direction:column;gap:10px}
+.question-card{min-height:290px}
+.letter-pill{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:18px;background:linear-gradient(145deg,#ffe990,#d7a532);color:#312000;font-size:34px;font-weight:1000}
+.question{font-size:clamp(21px,2.4vw,32px);line-height:1.6;margin:12px 0;font-weight:900}
+.answer{padding:12px;border-radius:14px;background:#071425;border:1px solid #2c4a69;color:#ffe896;font-size:20px;font-weight:1000;margin:8px 0}
+.host-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.host-controls .wide{grid-column:1/-1}
+.winner{position:fixed;inset:0;z-index:50;background:#02060dda;display:flex;align-items:center;justify-content:center;padding:20px}
+.winner-box{width:min(650px,94vw);text-align:center;border-radius:28px;padding:34px;background:#0d1b2f;border:2px solid #f6cd58;box-shadow:0 0 80px #f6cd5844}
+.winner-box h2{font-size:clamp(38px,7vw,70px);margin:8px 0}
+.host-only{}
+.status{margin-top:8px;padding:9px 11px;border-radius:12px;background:#071321;border:1px solid #263f5a;color:var(--muted);font-size:13px}
+@media(max-width:900px){
+ .game{grid-template-columns:1fr}
+ .side{display:grid;grid-template-columns:1fr 1fr}
+ .question-card{min-height:0}
+}
+@media(max-width:640px){
+ .side{grid-template-columns:1fr}
+ .board-wrap{padding:24px 29px}
+ .hex{width:61px;height:53px;font-size:25px}
+ .hex-row{gap:2px;margin-top:-6px}.hex-row:nth-child(even){transform:translateX(31px)}
+ .edge-left,.edge-right{width:12px;top:28px;bottom:28px}.edge-left{left:4px}.edge-right{right:4px}
+ .edge-top,.edge-bottom{height:12px;left:38px;right:38px}
+}
+@media(orientation:landscape) and (max-height:650px){
+ .app{padding:6px}.topbar{margin-bottom:5px}
+ .brand{font-size:24px}.game{grid-template-columns:minmax(0,1fr) 285px;gap:7px}
+ .card{padding:8px;border-radius:14px}
+ .scorebar{margin-bottom:3px}.score{padding:4px 8px;font-size:13px}
+ .board-wrap{width:min(100%,650px);padding:18px 32px}
+ .hex{width:70px;height:60px;font-size:27px}
+ .hex-row{margin-top:-7px}.hex-row:nth-child(even){transform:translateX(36px)}
+ .edge-top,.edge-bottom{height:11px;left:42px;right:42px}.edge-top{top:2px}.edge-bottom{bottom:2px}
+ .edge-left,.edge-right{width:11px;top:22px;bottom:22px}
+ .question-card{min-height:0}.letter-pill{width:42px;height:42px;font-size:26px;border-radius:12px}
+ .question{font-size:19px;margin:6px 0;line-height:1.4}.answer{padding:7px;font-size:17px;margin:5px 0}
+ .btn{padding:8px 9px;border-radius:11px;font-size:13px}.host-controls{gap:5px;margin-top:6px}
+ .status{padding:5px 7px;margin-top:5px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="app"><div class="shell">
+  <div class="topbar">
+    <div class="brand">حروف</div>
+    <div id="net" class="badge">Firebase: جارٍ الاتصال…</div>
+  </div>
+
+  <section id="home">
+    <div class="card hero">
+      <h1>تحدي الحروف</h1>
+      <p>الفريق الأخضر يصل من أعلى اللوحة إلى أسفلها، والفريق الأحمر يصل من اليمين إلى اليسار. اختر حرفًا، أجب عن السؤال، واكسب الخلية لتبني طريق الفوز.</p>
+      <div class="row center">
+        <button id="createBtn" class="btn primary">🎙️ إنشاء لعبة كمضيف</button>
+        <button id="joinBtn" class="btn blue">📺 الانضمام كشاشة عرض</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="join" class="hidden join">
+    <div class="card">
+      <h2 style="margin-top:0">الدخول إلى غرفة</h2>
+      <label>رمز الغرفة</label>
+      <input id="joinCode" maxlength="4" inputmode="numeric" placeholder="1234">
+      <div class="row grow" style="margin-top:12px">
+        <button id="doJoin" class="btn primary">دخول</button>
+        <button id="backBtn" class="btn ghost">رجوع</button>
+      </div>
+      <div id="joinStatus" class="status">أدخل رمز الغرفة المكوّن من 4 أرقام.</div>
+    </div>
+  </section>
+
+  <section id="lobby" class="hidden">
+    <div class="card" style="max-width:760px;margin:4vh auto;text-align:center">
+      <div class="note">رمز الغرفة</div>
+      <div id="roomCode" class="room-code">----</div>
+      <div class="note">افتح الموقع على التلفزيون أو جهاز آخر واختر «الانضمام كشاشة عرض».</div>
+      <div class="row center" style="margin-top:14px">
+        <button id="startBtn" class="btn primary">بدء اللعبة</button>
+        <button id="copyBtn" class="btn ghost">نسخ الرمز</button>
+        <button id="closeBtn" class="btn red">إغلاق الغرفة</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="hidden">
+    <div class="game">
+      <div class="card board-card">
+        <div class="scorebar">
+          <div class="score green">الأخضر: <span id="greenCount">0</span></div>
+          <div id="turnLabel" class="score">اختر حرفًا</div>
+          <div class="score red">الأحمر: <span id="redCount">0</span></div>
+        </div>
+        <div class="board-wrap">
+          <div class="edge-top"></div><div class="edge-bottom"></div>
+          <div class="edge-left"></div><div class="edge-right"></div>
+          <div id="board" class="board"></div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="card question-card">
+          <div id="letterPill" class="letter-pill">؟</div>
+          <div id="questionText" class="question">اختر خلية من اللوحة لعرض السؤال.</div>
+          <div id="answerBox" class="answer hidden"></div>
+          <div id="hostControls" class="host-controls hidden">
+            <button id="revealBtn" class="btn primary wide">إظهار الإجابة</button>
+            <button id="greenBtn" class="btn green">✓ للأخضر</button>
+            <button id="redBtn" class="btn red">✓ للأحمر</button>
+            <button id="cancelBtn" class="btn ghost wide">إلغاء السؤال</button>
+          </div>
+          <div id="status" class="status">بانتظار بدء اللعب.</div>
+        </div>
+        <div id="hostPanel" class="card hidden">
+          <b>تحكم المضيف</b>
+          <div class="row grow" style="margin-top:9px">
+            <button id="newGameBtn" class="btn ghost">لعبة جديدة</button>
+            <button id="exitBtn" class="btn red">إنهاء</button>
+          </div>
+          <div class="note" style="margin-top:8px">الأخضر: يصل أعلى ↕ أسفل. الأحمر: يصل يمين ↔ يسار.</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</div></div>
+
+<div id="winner" class="winner hidden">
+  <div class="winner-box">
+    <div style="font-size:20px;color:#b9c6d8">اكتمل المسار</div>
+    <h2 id="winnerText">الفريق الأخضر فاز!</h2>
+    <button id="winnerClose" class="btn primary">عرض اللوحة</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyBd36jTJ1Z-SrhyXk_jXOcVBjPvVFGfpek",
+  authDomain:"couple-battleship.firebaseapp.com",
+  databaseURL:"https://couple-battleship-default-rtdb.firebaseio.com",
+  projectId:"couple-battleship",
+  storageBucket:"couple-battleship.firebasestorage.app",
+  messagingSenderId:"1030235226722",
+  appId:"1:1030235226722:web:111d78d035944a17a3873b"
+};
+const ROOT="familyLettersRooms";
+const LETTERS=["أ","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"];
+const BANK={
+"أ":[["ما الحيوان الملقب بملك الغابة؟","أسد"],["ما أكبر قارات العالم مساحة؟","آسيا"]],
+"ب":[["ما عاصمة لبنان؟","بيروت"],["ما المسطح المائي الذي يفصل الجزيرة العربية عن أفريقيا؟","بحر الأحمر"]],
+"ت":[["ما عاصمة الجمهورية التونسية؟","تونس"],["ما الدولة التي تقع فيها مدينة إسطنبول؟","تركيا"]],
+"ث":[["ما الحيوان المعروف بالمكر في كثير من الحكايات؟","ثعلب"],["ما اسم العدد الذي يأتي بعد اثنين؟","ثلاثة"]],
+"ج":[["ما المدينة السعودية المعروفة بعروس البحر الأحمر؟","جدة"],["ما الشهر الهجري الذي يأتي بعد ربيع الآخر؟","جمادى الأولى"]],
+"ح":[["ما أكبر حيوان معروف على الأرض؟","حوت أزرق"],["ما المعدن الأساسي الذي يدخل في صناعة الفولاذ؟","حديد"]],
+"خ":[["ما الخضار الأخضر الطويل الذي يؤكل في السلطة؟","خيار"],["ما نوع من التوابل يصنع من بذور صفراء ويستخدم كصلصة؟","خردل"]],
+"د":[["ما عاصمة سوريا؟","دمشق"],["ما الحيوان البحري الذكي المعروف بقفزاته؟","دلفين"]],
+"ذ":[["ما المعدن النفيس الأصفر؟","ذهب"],["ما الحيوان البري الذي يعيش في مجموعات ويشبه الكلب؟","ذئب"]],
+"ر":[["ما عاصمة المملكة العربية السعودية؟","رياض"],["ما الشهر الهجري الذي يصومه المسلمون؟","رمضان"]],
+"ز":[["ما عاصمة كرواتيا؟","زغرب"],["ما الحيوان الأطول رقبة بين الحيوانات البرية؟","زرافة"]],
+"س":[["ما عاصمة كوريا الجنوبية؟","سيول"],["ما المادة البيضاء الحلوة المستخدمة في التحلية؟","سكر"]],
+"ش":[["ما النجم الذي يضيء الأرض نهارًا؟","شمس"],["ما الشهر الهجري الذي يسبق رمضان؟","شعبان"]],
+"ص":[["ما الطائر الجارح الشهير في الجزيرة العربية؟","صقر"],["ما الصوت الذي نسمعه عند انعكاس الصوت من سطح بعيد؟","صدى"]],
+"ض":[["ما الحيوان البرمائي الذي يقفز ويعيش قرب الماء؟","ضفدع"],["ما الأسنان الخلفية المستخدمة في طحن الطعام؟","ضروس"]],
+"ط":[["ما عاصمة اليابان؟","طوكيو"],["ما الطائر المعروف بريشه الملون ومروحة ذيله؟","طاووس"]],
+"ظ":[["ما عكس النور؟","ظلام"],["ما عكس الباطن؟","ظاهر"]],
+"ع":[["ما عاصمة الأردن؟","عمان"],["ما جمع كلمة عين؟","عيون"]],
+"غ":[["ما الحيوان الصحراوي الرشيق ذو القرون؟","غزال"],["ما المادة التي لا شكل ثابت لها وتملأ الوعاء؟","غاز"]],
+"ف":[["ما الحيوان الضخم المعروف بخرطومه؟","فيل"],["ما الفاكهة الحمراء الصغيرة التي تحمل بذورها على سطحها؟","فراولة"]],
+"ق":[["ما عاصمة مصر؟","قاهرة"],["ما العضو الذي يضخ الدم في جسم الإنسان؟","قلب"]],
+"ك":[["ما عاصمة دولة الكويت؟","كويت"],["ما الحيوان الأليف المعروف بوفائه للإنسان؟","كلب"]],
+"ل":[["ما الدولة العربية التي عاصمتها بيروت؟","لبنان"],["ما الجزء المرئي المضيء من النار؟","لهب"]],
+"م":[["ما الكوكب المعروف بالكوكب الأحمر؟","مريخ"],["ما السائل الذي يغطي معظم سطح الأرض؟","ماء"]],
+"ن":[["ما الغاز الأكثر وجودًا في الغلاف الجوي للأرض؟","نيتروجين"],["ما الحيوان المفترس المخطط من فصيلة السنوريات؟","نمر"]],
+"ه":[["ما عاصمة فنلندا؟","هلسنكي"],["ما الجهاز المحمول المستخدم للاتصال والتطبيقات؟","هاتف"]],
+"و":[["ما وحدة قياس القدرة الكهربائية؟","وات"],["ما الحيوان الكبير ذو القرن على أنفه؟","وحيد القرن"]],
+"ي":[["ما الدولة الآسيوية التي عاصمتها طوكيو؟","يابان"],["ما الجهة المقابلة لليسار؟","يمين"]]
+};
+
+let uid="",role="",room="",roomRef=null,state=null;
+const $=id=>document.getElementById(id);
+function show(id){["home","join","lobby","gameScreen"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));let t=a[i];a[i]=a[j];a[j]=t}return a}
+function code4(){return String(Math.floor(1000+Math.random()*9000))}
+function newBoard(){return shuffle(LETTERS).slice(0,25).map((letter,i)=>({id:i,letter:letter,owner:"neutral"}))}
+function questionFor(letter){let list=BANK[letter]||[];return list[Math.floor(Math.random()*list.length)]||["سؤال غير متوفر","—"]}
+function gameState(){return {phase:"playing",board:newBoard(),current:null,winner:null,startedAt:firebase.database.ServerValue.TIMESTAMP}}
+function enterGameMode(){
+  document.body.classList.add("game-mode");
+  if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
+  if(screen.orientation&&screen.orientation.lock)screen.orientation.lock("landscape").catch(()=>{});
+}
+function setStatus(t){$("status").textContent=t||""}
+function roomError(e){console.error(e);alert("تعذر الاتصال بالغرفة. تأكد من Firebase Rules لمسار familyLettersRooms.");}
+
+firebase.initializeApp(FIREBASE_CONFIG);
+firebase.auth().signInAnonymously().catch(e=>{$("net").textContent="Firebase: خطأ"});
+firebase.auth().onAuthStateChanged(u=>{
+  if(u){uid=u.uid;$("net").textContent="Firebase: متصل ✓"}
+});
+
+$("createBtn").onclick=async()=>{
+  if(!uid)return alert("انتظر اكتمال اتصال Firebase.");
+  role="host";
+  try{
+    let c="";
+    for(let i=0;i<20;i++){c=code4();let s=await firebase.database().ref(ROOT+"/"+c).once("value");if(!s.exists())break}
+    room=c;roomRef=firebase.database().ref(ROOT+"/"+room);
+    await roomRef.set({hostUid:uid,createdAt:firebase.database.ServerValue.TIMESTAMP,phase:"lobby"});
+    $("roomCode").textContent=room;subscribe();show("lobby");
+  }catch(e){roomError(e)}
+};
+$("joinBtn").onclick=()=>show("join");
+$("backBtn").onclick=()=>show("home");
+$("joinCode").oninput=()=>{$("joinCode").value=$("joinCode").value.replace(/\D/g,"").slice(0,4)};
+$("doJoin").onclick=async()=>{
+  let c=$("joinCode").value.trim();
+  if(c.length!==4){$("joinStatus").textContent="أدخل 4 أرقام.";return}
+  try{
+    let ref=firebase.database().ref(ROOT+"/"+c),snap=await ref.once("value");
+    if(!snap.exists()){$("joinStatus").textContent="الغرفة غير موجودة.";return}
+    role="viewer";room=c;roomRef=ref;subscribe();enterGameMode();show("gameScreen");
+  }catch(e){$("joinStatus").textContent="تعذر الدخول. تحقق من قواعد Firebase."}
+};
+$("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(room);$("copyBtn").textContent="تم النسخ ✓"}catch(e){}};
+$("startBtn").onclick=async()=>{
+  try{await roomRef.update(gameState());enterGameMode();show("gameScreen")}catch(e){roomError(e)}
+};
+$("closeBtn").onclick=async()=>{if(roomRef)await roomRef.remove();location.reload()};
+$("exitBtn").onclick=async()=>{if(roomRef)await roomRef.remove();location.reload()};
+$("newGameBtn").onclick=async()=>{
+  if(!confirm("بدء لوحة جديدة؟"))return;
+  await roomRef.update(gameState());
+};
+
+function subscribe(){
+  roomRef.off();
+  roomRef.on("value",snap=>{
+    if(!snap.exists()){if(role==="viewer"){alert("تم إغلاق الغرفة.");location.reload()}return}
+    state=snap.val();render();
+  });
+}
+function render(){
+  if(!state)return;
+  if(role==="host"&&state.phase==="lobby"){show("lobby");return}
+  if(state.phase==="playing"||state.phase==="finished"){
+    show("gameScreen");document.body.classList.toggle("host",role==="host");
+    $("hostPanel").classList.toggle("hidden",role!=="host");
+    $("hostControls").classList.toggle("hidden",role!=="host");
+    renderBoard();renderQuestion();
+    if(state.winner){
+      $("winnerText").textContent=state.winner==="green"?"الفريق الأخضر فاز!":"الفريق الأحمر فاز!";
+      $("winnerText").style.color=state.winner==="green"?"#65f59a":"#ff6b75";
+      $("winner").classList.remove("hidden");
+    }
+  }
+}
+function renderBoard(){
+  let b=state.board||[],html="";
+  for(let r=0;r<5;r++){
+    html+='<div class="hex-row">';
+    for(let c=0;c<5;c++){
+      let i=r*5+c,x=b[i]||{letter:"؟",owner:"neutral"};
+      let sel=state.current&&state.current.cell===i?" selected":"";
+      html+='<button class="hex '+x.owner+sel+'" data-i="'+i+'">'+x.letter+'</button>';
+    }
+    html+="</div>";
+  }
+  $("board").innerHTML=html;
+  $("board").querySelectorAll(".hex").forEach(btn=>{
+    btn.onclick=()=>selectCell(Number(btn.dataset.i));
+    btn.disabled=role!=="host";
+  });
+  $("greenCount").textContent=b.filter(x=>x.owner==="green").length;
+  $("redCount").textContent=b.filter(x=>x.owner==="red").length;
+  $("turnLabel").textContent=state.winner?"انتهت اللعبة":state.current?"السؤال الحالي":"اختر حرفًا";
+}
+async function selectCell(i){
+  if(role!=="host"||state.current||state.winner)return;
+  let cell=state.board[i];if(!cell||cell.owner!=="neutral")return;
+  let qa=questionFor(cell.letter);
+  await roomRef.child("current").set({cell:i,letter:cell.letter,q:qa[0],a:qa[1],revealed:false});
+}
+function renderQuestion(){
+  let q=state.current;
+  if(!q){
+    $("letterPill").textContent="؟";$("questionText").textContent=state.winner?"انتهت اللعبة.":"اختر خلية من اللوحة لعرض السؤال.";
+    $("answerBox").classList.add("hidden");setStatus(role==="host"?"اضغط أي حرف ذهبي لبدء السؤال.":"بانتظار اختيار المضيف.");
+    $("revealBtn").disabled=true;$("greenBtn").disabled=true;$("redBtn").disabled=true;$("cancelBtn").disabled=true;
+    return;
+  }
+  $("letterPill").textContent=q.letter;$("questionText").textContent=q.q;
+  $("answerBox").textContent="الإجابة: "+q.a;$("answerBox").classList.toggle("hidden",!q.revealed);
+  $("revealBtn").disabled=q.revealed;$("greenBtn").disabled=false;$("redBtn").disabled=false;$("cancelBtn").disabled=false;
+  setStatus(q.revealed?"ظهرت الإجابة. حدّد الفريق الذي كسب الخلية.":"الحرف: "+q.letter+" — بانتظار الإجابة.");
+}
+$("revealBtn").onclick=()=>roomRef.child("current/revealed").set(true);
+$("cancelBtn").onclick=()=>roomRef.child("current").remove();
+$("greenBtn").onclick=()=>award("green");
+$("redBtn").onclick=()=>award("red");
+
+async function award(team){
+  if(role!=="host"||!state.current)return;
+  let idx=state.current.cell,b=(state.board||[]).map(x=>Object.assign({},x));
+  b[idx].owner=team;
+  let winner=hasPath(b,team)?team:null;
+  await roomRef.update({board:b,current:null,winner:winner,phase:winner?"finished":"playing"});
+}
+function neighbors(i){
+  let r=Math.floor(i/5),c=i%5,out=[],d;
+  if(r%2===0)d=[[0,-1],[0,1],[-1,-1],[-1,0],[1,-1],[1,0]];
+  else d=[[0,-1],[0,1],[-1,0],[-1,1],[1,0],[1,1]];
+  d.forEach(v=>{let rr=r+v[0],cc=c+v[1];if(rr>=0&&rr<5&&cc>=0&&cc<5)out.push(rr*5+cc)});
+  return out;
+}
+function hasPath(board,team){
+  let starts=[];
+  if(team==="green"){for(let c=0;c<5;c++)if(board[c].owner==="green")starts.push(c)}
+  else{for(let r=0;r<5;r++){let i=r*5;if(board[i].owner==="red")starts.push(i)}}
+  let seen=new Set(starts),q=[...starts];
+  while(q.length){
+    let i=q.shift(),r=Math.floor(i/5),c=i%5;
+    if(team==="green"&&r===4)return true;
+    if(team==="red"&&c===4)return true;
+    neighbors(i).forEach(n=>{if(!seen.has(n)&&board[n].owner===team){seen.add(n);q.push(n)}})
+  }
+  return false;
+}
+$("winnerClose").onclick=()=>$("winner").classList.add("hidden");
+</script>
+</body>
+</html>
