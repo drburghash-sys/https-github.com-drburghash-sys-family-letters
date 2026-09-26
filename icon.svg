@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="حروف">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07152c"/><stop offset=".55" stop-color="#0b2b57"/><stop offset="1" stop-color="#06101f"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff1a6"/><stop offset=".34" stop-color="#ffd35c"/><stop offset=".7" stop-color="#d79618"/><stop offset="1" stop-color="#8a5400"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8b0813"/><stop offset=".5" stop-color="#ef233c"/><stop offset="1" stop-color="#7f0710"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#63ff8e"/><stop offset=".5" stop-color="#16c653"/><stop offset="1" stop-color="#08712f"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".55"/></filter>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect x="8" y="8" width="496" height="496" rx="92" fill="url(#bg)" stroke="url(#gold)" stroke-width="12"/>
+  <g opacity=".16" stroke="#7db9ff">
+    <path d="M30 128h452M30 256h452M30 384h452M128 30v452M256 30v452M384 30v452"/>
+  </g>
+  <path d="M120 64h272l34 42-34 42H120l-34-42z" fill="url(#green)" stroke="#ffdc69" stroke-width="5" filter="url(#glow)"/>
+  <path d="M120 364h272l34 42-34 42H120l-34-42z" fill="url(#green)" stroke="#ffdc69" stroke-width="5" filter="url(#glow)"/>
+  <path d="M65 126l42-34 42 34v260l-42 34-42-34z" fill="url(#red)" stroke="#ffcf57" stroke-width="5" filter="url(#glow)"/>
+  <path d="M363 126l42-34 42 34v260l-42 34-42-34z" fill="url(#red)" stroke="#ffcf57" stroke-width="5" filter="url(#glow)"/>
+  <g filter="url(#shadow)" stroke="#754b00" stroke-width="5">
+    <path d="M192 104h64l32 55-32 55h-64l-32-55z" fill="url(#gold)"/>
+    <path d="M256 104h64l32 55-32 55h-64l-32-55z" fill="url(#gold)"/>
+    <path d="M160 159h64l32 55-32 55h-64l-32-55z" fill="url(#gold)"/>
+    <path d="M224 159h64l32 55-32 55h-64l-32-55z" fill="url(#gold)"/>
+    <path d="M288 159h64l32 55-32 55h-64l-32-55z" fill="url(#gold)"/>
+    <path d="M192 214h64l32 55-32 55h-64l-32-55z" fill="url(#gold)"/>
+    <path d="M256 214h64l32 55-32 55h-64l-32-55z" fill="url(#gold)"/>
+    <path d="M224 269h64l32 55-32 55h-64l-32-55z" fill="url(#gold)"/>
+  </g>
+  <g fill="#0a2d70" font-family="Tahoma,Arial,sans-serif" font-weight="900" text-anchor="middle" font-size="44">
+    <text x="224" y="174">ش</text><text x="288" y="174">ب</text>
+    <text x="192" y="231">غ</text><text x="320" y="231">ك</text>
+    <text x="224" y="286">ر</text><text x="288" y="286">م</text><text x="256" y="342">ف</text>
+  </g>
+  <g filter="url(#shadow)">
+    <path d="M116 205h280l34 51-34 51H116l-34-51z" fill="#071a35" stroke="url(#gold)" stroke-width="8"/>
+    <text x="256" y="278" fill="url(#gold)" stroke="#7e4b00" stroke-width="2" paint-order="stroke" text-anchor="middle" font-size="92" font-family="Tahoma,Arial,sans-serif" font-weight="900">حروف</text>
+  </g>
+  <circle cx="54" cy="54" r="8" fill="#fff7c6" filter="url(#glow)"/>
+  <circle cx="458" cy="62" r="6" fill="#fff7c6" filter="url(#glow)"/>
+</svg>
