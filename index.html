@@ -58,7 +58,7 @@ input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-
 .edge-left,.edge-right{position:absolute;top:33px;bottom:33px;width:17px;background:linear-gradient(90deg,#ff4250,#b71020);border:2px solid #ff6670;box-shadow:0 0 18px #ef334088;z-index:0}
 .edge-left{left:8px}.edge-right{right:8px}
 .board{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2px}
-.hex-row{display:flex;justify-content:center;gap:4px;margin-top:-8px}
+.hex-row{display:flex;justify-content:center;gap:4px;margin-top:-8px;direction:ltr}
 .hex-row:first-child{margin-top:0}
 .hex-row:nth-child(even){transform:translateX(45px)}
 .hex{
@@ -399,7 +399,7 @@ const BANK={
 "ي":[["ما الدولة الآسيوية التي عاصمتها طوكيو؟","يابان"],["ما الجهة المقابلة لليسار؟","يمين"]]
 };
 
-let uid="",role="",room="",roomRef=null,state=null;
+let uid="",role="",room="",roomRef=null,state=null,winnerRepairing=false;
 const $=id=>document.getElementById(id);
 function show(id){["home","join","lobby","gameScreen"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));let t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -470,6 +470,15 @@ function render(){
     $("hostPanel").classList.toggle("hidden",role!=="host");
     $("hostControls").classList.toggle("hidden",role!=="host");
     renderBoard();renderQuestion();
+    if(role==="host"&&!state.winner&&!winnerRepairing){
+      const autoWinner=detectWinner(state.board||[]);
+      if(autoWinner){
+        winnerRepairing=true;
+        roomRef.update({winner:autoWinner,phase:"finished",current:null})
+          .finally(()=>{winnerRepairing=false});
+        return;
+      }
+    }
     if(state.winner){
       $("winnerText").textContent=state.winner==="green"?"الفريق الأخضر فاز!":"الفريق الأحمر فاز!";
       $("winnerText").style.color=state.winner==="green"?"#65f59a":"#ff6b75";
@@ -528,7 +537,7 @@ async function award(team){
   if(role!=="host"||!state.current)return;
   let idx=state.current.cell,b=(state.board||[]).map(x=>Object.assign({},x));
   b[idx].owner=team;
-  let winner=hasPath(b,team)?team:null;
+  let winner=detectWinner(b);
   await roomRef.update({board:b,current:null,winner:winner,phase:winner?"finished":"playing"});
 }
 function neighbors(i){
