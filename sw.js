@@ -1,4 +1,4 @@
-const CACHE="family-letters-v4";
+const CACHE="family-letters-v5";
 const CORE=["./","./index.html","./icon.svg","./manifest.webmanifest","./questions.json"];
 
 self.addEventListener("install",event=>{
