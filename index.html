@@ -473,6 +473,7 @@ function render(){
     if(state.winner){
       $("winnerText").textContent=state.winner==="green"?"الفريق الأخضر فاز!":"الفريق الأحمر فاز!";
       $("winnerText").style.color=state.winner==="green"?"#65f59a":"#ff6b75";
+      setStatus(state.winner==="green"?"انتهت اللعبة — فاز الفريق الأخضر":"انتهت اللعبة — فاز الفريق الأحمر");
       $("winner").classList.remove("hidden");
     }
   }
@@ -489,6 +490,8 @@ function renderBoard(){
     html+="</div>";
   }
   $("board").innerHTML=html;
+  $("board").classList.toggle("winner-green",state.winner==="green");
+  $("board").classList.toggle("winner-red",state.winner==="red");
   $("board").querySelectorAll(".hex").forEach(btn=>{
     btn.onclick=()=>selectCell(Number(btn.dataset.i));
     btn.disabled=role!=="host";
