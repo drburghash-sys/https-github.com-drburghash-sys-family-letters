@@ -1,5 +1,5 @@
-const CACHE="family-letters-v1";
-const CORE=["./","./index.html","./icon.svg","./manifest.webmanifest"];
+const CACHE="family-letters-v3";
+const CORE=["./","./index.html","./icon.svg","./manifest.webmanifest","./questions.json"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
 });
