@@ -568,6 +568,10 @@ function render(){
     $("hostPanel").classList.toggle("hidden",role!=="host");
     $("hostControls").classList.toggle("hidden",role!=="host");
     renderBoard();renderQuestion();
+    if(role==="host"&&!state.turnTeam&&!state.current&&!state.winner){
+      roomRef.child("turnTeam").set(Math.random()<0.5?"green":"red");
+      return;
+    }
     if(role==="host"&&!state.winner&&!winnerRepairing){
       const autoWinner=detectWinner(state.board||[]);
       if(autoWinner){
