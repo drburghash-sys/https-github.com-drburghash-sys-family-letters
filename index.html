@@ -258,6 +258,40 @@ input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-
   .edge-left{left:8px}.edge-right{right:8px}
 }
 
+
+/* V1.3 — team turn + synchronized answer timer */
+.score{position:relative;transition:.2s box-shadow,.2s transform,.2s background}
+.scorebar{margin-top:28px}
+.score.green.active-turn{box-shadow:0 0 0 2px #33df75,0 0 24px #22c55e88;transform:translateY(-2px)}
+.score.red.active-turn{box-shadow:0 0 0 2px #ff5360,0 0 24px #ef334088;transform:translateY(-2px)}
+.team-timer{
+  position:absolute;top:-28px;left:50%;transform:translateX(-50%);
+  min-width:54px;padding:4px 10px;border-radius:999px;
+  background:#08111f;border:2px solid currentColor;color:#fff;
+  font-size:17px;font-weight:1000;line-height:1;
+  box-shadow:0 4px 16px #0009;
+}
+.score.green .team-timer{color:#63f49a}
+.score.red .team-timer{color:#ff727c}
+.team-timer.urgent{animation:timerPulse .45s linear infinite}
+@keyframes timerPulse{50%{transform:translateX(-50%) scale(1.12);filter:brightness(1.7)}}
+.role-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.role-choice{border:2px solid transparent}
+.role-choice.selected{border-color:var(--gold);box-shadow:0 0 18px #f7d77455}
+.role-choice.green.selected{border-color:#57ef8e;box-shadow:0 0 18px #22c55e77}
+.role-choice.red.selected{border-color:#ff6873;box-shadow:0 0 18px #ef334077}
+.can-pick .hex.neutral:hover{transform:scale(1.07);filter:brightness(1.2);box-shadow:0 0 20px #f7d77488}
+.turn-note{font-weight:1000}
+@media(max-width:640px){
+  .role-picker{grid-template-columns:1fr}
+  .scorebar{margin-top:24px}
+  .team-timer{top:-24px;font-size:14px;min-width:46px}
+}
+@media(orientation:landscape) and (max-height:650px){
+  .scorebar{margin-top:22px}
+  .team-timer{top:-22px;font-size:13px;min-width:42px;padding:3px 8px}
+}
+
 </style>
 </head>
 <body>
@@ -273,7 +307,7 @@ input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-
       <p>الفريق الأخضر يصل من أعلى اللوحة إلى أسفلها، والفريق الأحمر يصل من اليمين إلى اليسار. اختر حرفًا، أجب عن السؤال، واكسب الخلية لتبني طريق الفوز.</p>
       <div class="row center">
         <button id="createBtn" class="btn primary">🎙️ إنشاء لعبة كمضيف</button>
-        <button id="joinBtn" class="btn blue">📺 الانضمام كشاشة عرض</button>
+        <button id="joinBtn" class="btn blue">🎮 الانضمام للغرفة</button>
       </div>
     </div>
   </section>
@@ -283,6 +317,12 @@ input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-
       <h2 style="margin-top:0">الدخول إلى غرفة</h2>
       <label>رمز الغرفة</label>
       <input id="joinCode" maxlength="4" inputmode="numeric" placeholder="1234">
+      <label>طريقة الدخول</label>
+      <div class="role-picker">
+        <button type="button" class="btn blue role-choice selected" data-role="viewer">📺 شاشة عرض</button>
+        <button type="button" class="btn green role-choice" data-role="green">🟢 عضو الأخضر</button>
+        <button type="button" class="btn red role-choice" data-role="red">🔴 عضو الأحمر</button>
+      </div>
       <div class="row grow" style="margin-top:12px">
         <button id="doJoin" class="btn primary">دخول</button>
         <button id="backBtn" class="btn ghost">رجوع</button>
@@ -295,7 +335,7 @@ input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-
     <div class="card" style="max-width:760px;margin:4vh auto;text-align:center">
       <div class="note">رمز الغرفة</div>
       <div id="roomCode" class="room-code">----</div>
-      <div class="note">افتح الموقع على التلفزيون أو جهاز آخر واختر «الانضمام كشاشة عرض».</div>
+      <div class="note">افتح الموقع على التلفزيون كشاشة عرض، ويدخل أعضاء الفريقين من جوالاتهم بنفس رمز الغرفة.</div>
       <div class="row center" style="margin-top:14px">
         <button id="startBtn" class="btn primary">بدء اللعبة</button>
         <button id="copyBtn" class="btn ghost">نسخ الرمز</button>
@@ -308,9 +348,9 @@ input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-
     <div class="game">
       <div class="card board-card">
         <div class="scorebar">
-          <div class="score green">الأخضر: <span id="greenCount">0</span></div>
+          <div id="greenScore" class="score green"><div id="greenTimer" class="team-timer hidden">15</div>الأخضر: <span id="greenCount">0</span></div>
           <div id="turnLabel" class="score">اختر حرفًا</div>
-          <div class="score red">الأحمر: <span id="redCount">0</span></div>
+          <div id="redScore" class="score red"><div id="redTimer" class="team-timer hidden">15</div>الأحمر: <span id="redCount">0</span></div>
         </div>
         <div class="board-wrap">
           <div class="edge-top"></div><div class="edge-bottom"></div>
@@ -326,6 +366,7 @@ input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-
           <div id="answerBox" class="answer hidden"></div>
           <div id="hostControls" class="host-controls hidden">
             <button id="revealBtn" class="btn primary wide">إظهار الإجابة</button>
+            <button id="wrongBtn" class="btn ghost wide">🔔 خطأ / لم يُجب</button>
             <button id="greenBtn" class="btn green">✓ للأخضر</button>
             <button id="redBtn" class="btn red">✓ للأحمر</button>
             <button id="cancelBtn" class="btn ghost wide">إلغاء السؤال</button>
@@ -367,6 +408,7 @@ const FIREBASE_CONFIG={
   appId:"1:1030235226722:web:111d78d035944a17a3873b"
 };
 const ROOT="familyLettersRooms";
+const QUESTION_SECONDS=15;
 const LETTERS=["أ","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"];
 let BANK={};
 let bankReady=false;
@@ -386,7 +428,7 @@ async function loadQuestions(){
   }
 }
 
-let uid="",role="",room="",roomRef=null,state=null,winnerRepairing=false;
+let uid="",role="",room="",roomRef=null,state=null,winnerRepairing=false,joinRole="viewer",serverOffset=0,audioCtx=null,lastBuzzKey="";
 const $=id=>document.getElementById(id);
 function show(id){["home","join","lobby","gameScreen"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));let t=a[i];a[i]=a[j];a[j]=t}return a}
@@ -402,13 +444,48 @@ function questionFor(letter,usedQuestions){
   const item=choices[Math.floor(Math.random()*choices.length)];
   return {item,reset};
 }
-function gameState(){return {phase:"playing",board:newBoard(),current:null,winner:null,usedQuestions:{},startedAt:firebase.database.ServerValue.TIMESTAMP}}
+function gameState(){return {phase:"playing",board:newBoard(),current:null,winner:null,usedQuestions:{},turnTeam:Math.random()<0.5?"green":"red",startedAt:firebase.database.ServerValue.TIMESTAMP}}
 function enterGameMode(){
   document.body.classList.add("game-mode");
   if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
   if(screen.orientation&&screen.orientation.lock)screen.orientation.lock("landscape").catch(()=>{});
 }
 function setStatus(t){$("status").textContent=t||""}
+function teamName(t){return t==="green"?"الأخضر":"الأحمر"}
+function otherTeam(t){return t==="green"?"red":"green"}
+function serverNow(){return Date.now()+serverOffset}
+function unlockAudio(){
+  try{
+    const C=window.AudioContext||window.webkitAudioContext;
+    if(!C)return;
+    if(!audioCtx)audioCtx=new C();
+    if(audioCtx.state==="suspended")audioCtx.resume();
+  }catch(e){}
+}
+function playBuzzer(key){
+  if(key&&lastBuzzKey===key)return;
+  if(key)lastBuzzKey=key;
+  unlockAudio();
+  if(!audioCtx)return;
+  try{
+    const now=audioCtx.currentTime;
+    [0,.18].forEach((delay,idx)=>{
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type="square";o.frequency.setValueAtTime(idx?520:680,now+delay);
+      g.gain.setValueAtTime(.0001,now+delay);
+      g.gain.exponentialRampToValueAtTime(.22,now+delay+.01);
+      g.gain.exponentialRampToValueAtTime(.0001,now+delay+.16);
+      o.connect(g);g.connect(audioCtx.destination);
+      o.start(now+delay);o.stop(now+delay+.17);
+    });
+  }catch(e){}
+}
+async function expireCurrent(manual){
+  if(role!=="host"||!state||!state.current||state.current.timedOut)return;
+  const q=state.current;
+  if(manual)playBuzzer(room+":"+q.cell+":"+q.deadline);
+  await roomRef.child("current").update({timedOut:true});
+}
 function roomError(e){console.error(e);alert("تعذر الاتصال بالغرفة. تأكد من Firebase Rules لمسار familyLettersRooms.");}
 
 loadQuestions();
@@ -418,8 +495,20 @@ firebase.auth().signInAnonymously().catch(e=>{$("net").textContent="Firebase: خ
 firebase.auth().onAuthStateChanged(u=>{
   if(u){uid=u.uid;$("net").textContent="Firebase: متصل ✓"}
 });
+firebase.database().ref(".info/serverTimeOffset").on("value",snap=>{
+  serverOffset=Number(snap.val()||0);
+});
+
+document.querySelectorAll(".role-choice").forEach(btn=>{
+  btn.onclick=()=>{
+    joinRole=btn.dataset.role||"viewer";
+    document.querySelectorAll(".role-choice").forEach(x=>x.classList.toggle("selected",x===btn));
+    unlockAudio();
+  };
+});
 
 $("createBtn").onclick=async()=>{
+  unlockAudio();
   if(!uid)return alert("انتظر اكتمال اتصال Firebase.");
   role="host";
   try{
@@ -430,7 +519,7 @@ $("createBtn").onclick=async()=>{
     $("roomCode").textContent=room;subscribe();show("lobby");
   }catch(e){roomError(e)}
 };
-$("joinBtn").onclick=()=>show("join");
+$("joinBtn").onclick=()=>{unlockAudio();show("join")};
 $("backBtn").onclick=()=>show("home");
 $("joinCode").oninput=()=>{$("joinCode").value=$("joinCode").value.replace(/\D/g,"").slice(0,4)};
 $("doJoin").onclick=async()=>{
@@ -439,7 +528,7 @@ $("doJoin").onclick=async()=>{
   try{
     let ref=firebase.database().ref(ROOT+"/"+c),snap=await ref.once("value");
     if(!snap.exists()){$("joinStatus").textContent="الغرفة غير موجودة.";return}
-    role="viewer";room=c;roomRef=ref;subscribe();enterGameMode();show("gameScreen");
+    role=joinRole;room=c;roomRef=ref;subscribe();enterGameMode();show("gameScreen");
   }catch(e){$("joinStatus").textContent="تعذر الدخول. تحقق من قواعد Firebase."}
 };
 $("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(room);$("copyBtn").textContent="تم النسخ ✓"}catch(e){}};
@@ -466,7 +555,7 @@ $("newGameBtn").onclick=async()=>{
 function subscribe(){
   roomRef.off();
   roomRef.on("value",snap=>{
-    if(!snap.exists()){if(role==="viewer"){alert("تم إغلاق الغرفة.");location.reload()}return}
+    if(!snap.exists()){if(role!=="host"){alert("تم إغلاق الغرفة.");location.reload()}return}
     state=snap.val();render();
   });
 }
@@ -475,6 +564,7 @@ function render(){
   if(role==="host"&&state.phase==="lobby"){show("lobby");return}
   if(state.phase==="playing"||state.phase==="finished"){
     show("gameScreen");document.body.classList.toggle("host",role==="host");
+    document.body.classList.toggle("team-member",role==="green"||role==="red");
     $("hostPanel").classList.toggle("hidden",role!=="host");
     $("hostControls").classList.toggle("hidden",role!=="host");
     renderBoard();renderQuestion();
@@ -496,12 +586,13 @@ function render(){
   }
 }
 function renderBoard(){
-  let b=state.board||[],html="";
+  const b=state.board||[];
+  let html="";
   for(let r=0;r<5;r++){
     html+='<div class="hex-row">';
     for(let c=0;c<5;c++){
-      let i=r*5+c,x=b[i]||{letter:"؟",owner:"neutral"};
-      let sel=state.current&&state.current.cell===i?" selected":"";
+      const i=r*5+c,x=b[i]||{letter:"؟",owner:"neutral"};
+      const sel=state.current&&state.current.cell===i?" selected":"";
       html+='<button class="hex '+x.owner+sel+'" data-i="'+i+'">'+x.letter+'</button>';
     }
     html+="</div>";
@@ -509,45 +600,98 @@ function renderBoard(){
   $("board").innerHTML=html;
   $("board").classList.toggle("winner-green",state.winner==="green");
   $("board").classList.toggle("winner-red",state.winner==="red");
+
+  const canPick=(role==="green"||role==="red") &&
+    role===state.turnTeam && !state.current && !state.winner;
+  document.body.classList.toggle("can-pick",canPick);
+
   $("board").querySelectorAll(".hex").forEach(btn=>{
-    btn.onclick=()=>selectCell(Number(btn.dataset.i));
-    btn.disabled=role!=="host";
+    const i=Number(btn.dataset.i);
+    const cell=b[i];
+    btn.onclick=()=>selectCell(i);
+    btn.disabled=!(canPick&&cell&&cell.owner==="neutral");
   });
+
   $("greenCount").textContent=b.filter(x=>x.owner==="green").length;
   $("redCount").textContent=b.filter(x=>x.owner==="red").length;
-  $("turnLabel").textContent=state.winner?"انتهت اللعبة":state.current?"السؤال الحالي":"اختر حرفًا";
+
+  const activeTeam=state.current?state.current.answeringTeam:state.turnTeam;
+  $("greenScore").classList.toggle("active-turn",activeTeam==="green"&&!state.winner);
+  $("redScore").classList.toggle("active-turn",activeTeam==="red"&&!state.winner);
+
+  if(state.winner)$("turnLabel").textContent="انتهت اللعبة";
+  else if(state.current&&state.current.timedOut)$("turnLabel").textContent="فرصة "+teamName(otherTeam(state.current.answeringTeam));
+  else if(state.current)$("turnLabel").textContent="يجيب "+teamName(state.current.answeringTeam);
+  else $("turnLabel").textContent="يختار "+teamName(state.turnTeam||"green");
+
+  updateTimerUI();
 }
 async function selectCell(i){
-  if(role!=="host"||state.current||state.winner)return;
+  if(!(role==="green"||role==="red"))return;
+  if(role!==state.turnTeam||state.current||state.winner)return;
   const cell=state.board[i];
   if(!cell||cell.owner!=="neutral")return;
+  unlockAudio();
   if(!bankReady){
     const ok=await loadQuestions();
     if(!ok)return alert("تعذر تحميل بنك الأسئلة.");
   }
   const picked=questionFor(cell.letter,state.usedQuestions||{});
   const item=picked.item;
+  const deadline=serverNow()+QUESTION_SECONDS*1000;
+  const payload={
+    cell:i,letter:cell.letter,q:item.q,a:item.a,qid:item.id,
+    revealed:false,answeringTeam:role,deadline:deadline,timedOut:false
+  };
+  const result=await roomRef.child("current").transaction(cur=>cur?undefined:payload);
+  if(!result.committed)return;
   const letterUsedRef=roomRef.child("usedQuestions").child(cell.letter);
   if(picked.reset)await letterUsedRef.remove();
-  const updates={};
-  updates["current"]={cell:i,letter:cell.letter,q:item.q,a:item.a,qid:item.id,revealed:false};
-  updates["usedQuestions/"+cell.letter+"/"+item.id]=true;
-  await roomRef.update(updates);
+  await roomRef.child("usedQuestions").child(cell.letter).child(item.id).set(true);
 }
 function renderQuestion(){
-  let q=state.current;
+  const q=state.current;
   if(!q){
-    $("letterPill").textContent="؟";$("questionText").textContent=state.winner?"انتهت اللعبة.":"اختر خلية من اللوحة لعرض السؤال.";
-    $("answerBox").classList.add("hidden");setStatus(role==="host"?"اضغط أي حرف ذهبي لبدء السؤال.":"بانتظار اختيار المضيف.");
-    $("revealBtn").disabled=true;$("greenBtn").disabled=true;$("redBtn").disabled=true;$("cancelBtn").disabled=true;
+    $("letterPill").textContent="؟";
+    $("questionText").textContent=state.winner?"انتهت اللعبة.":"اختر خلية من اللوحة لعرض السؤال.";
+    $("answerBox").classList.add("hidden");
+    if(state.winner)setStatus("انتهت اللعبة.");
+    else if(role==="host")setStatus("بانتظار أن يختار الفريق "+teamName(state.turnTeam||"green")+" حرفًا.");
+    else if(role==="viewer")setStatus("الدور للفريق "+teamName(state.turnTeam||"green")+" لاختيار حرف.");
+    else if(role===state.turnTeam)setStatus("دور فريقك — اختر حرفًا ذهبيًا.");
+    else setStatus("انتظر — الاختيار الآن للفريق "+teamName(state.turnTeam||"green")+".");
+    $("revealBtn").disabled=true;
+    $("wrongBtn").disabled=true;
+    $("greenBtn").disabled=true;
+    $("redBtn").disabled=true;
+    $("cancelBtn").disabled=true;
+    updateTimerUI();
     return;
   }
-  $("letterPill").textContent=q.letter;$("questionText").textContent=q.q;
-  $("answerBox").textContent="الإجابة: "+q.a;$("answerBox").classList.toggle("hidden",!q.revealed);
-  $("revealBtn").disabled=q.revealed;$("greenBtn").disabled=false;$("redBtn").disabled=false;$("cancelBtn").disabled=false;
-  setStatus(q.revealed?"ظهرت الإجابة. حدّد الفريق الذي كسب الخلية.":"الحرف: "+q.letter+" — بانتظار الإجابة.");
+
+  $("letterPill").textContent=q.letter;
+  $("questionText").textContent=q.q;
+  $("answerBox").textContent="الإجابة: "+q.a;
+  $("answerBox").classList.toggle("hidden",!q.revealed);
+  $("revealBtn").disabled=!!q.revealed;
+  $("cancelBtn").disabled=false;
+
+  if(q.timedOut){
+    $("wrongBtn").disabled=true;
+    $("greenBtn").disabled=q.answeringTeam==="green";
+    $("redBtn").disabled=q.answeringTeam==="red";
+    setStatus("🔔 انتهى وقت الفريق "+teamName(q.answeringTeam)+" — فرصة للفريق "+teamName(otherTeam(q.answeringTeam))+".");
+    playBuzzer(room+":"+q.cell+":"+q.deadline);
+  }else{
+    $("wrongBtn").disabled=false;
+    $("greenBtn").disabled=q.answeringTeam!=="green";
+    $("redBtn").disabled=q.answeringTeam!=="red";
+    setStatus("يجيب الفريق "+teamName(q.answeringTeam)+" خلال "+QUESTION_SECONDS+" ثانية.");
+  }
+  updateTimerUI();
 }
 $("revealBtn").onclick=()=>roomRef.child("current/revealed").set(true);
+$("wrongBtn").onclick=()=>expireCurrent(true);
 $("cancelBtn").onclick=()=>roomRef.child("current").remove();
 $("greenBtn").onclick=()=>award("green");
 $("redBtn").onclick=()=>award("red");
@@ -557,8 +701,28 @@ async function award(team){
   let idx=state.current.cell,b=(state.board||[]).map(x=>Object.assign({},x));
   b[idx].owner=team;
   let winner=detectWinner(b);
-  await roomRef.update({board:b,current:null,winner:winner,phase:winner?"finished":"playing"});
+  await roomRef.update({board:b,current:null,turnTeam:team,winner:winner,phase:winner?"finished":"playing"});
 }
+function updateTimerUI(){
+  const gt=$("greenTimer"),rt=$("redTimer");
+  if(!gt||!rt)return;
+  gt.classList.add("hidden");rt.classList.add("hidden");
+  gt.classList.remove("urgent");rt.classList.remove("urgent");
+  const q=state&&state.current;
+  if(!q||!q.answeringTeam||!q.deadline)return;
+  const left=Math.max(0,Math.ceil((Number(q.deadline)-serverNow())/1000));
+  const el=q.answeringTeam==="green"?gt:rt;
+  el.textContent=left;
+  el.classList.remove("hidden");
+  if(left<=5)el.classList.add("urgent");
+  if(left<=0&&!q.timedOut){
+    const key=room+":"+q.cell+":"+q.deadline;
+    playBuzzer(key);
+    if(role==="host")expireCurrent(false);
+  }
+}
+setInterval(updateTimerUI,150);
+
 function neighbors(i){
   let r=Math.floor(i/5),c=i%5,out=[],d;
   if(r%2===0)d=[[0,-1],[0,1],[-1,-1],[-1,0],[1,-1],[1,0]];
