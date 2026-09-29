@@ -368,36 +368,23 @@ const FIREBASE_CONFIG={
 };
 const ROOT="familyLettersRooms";
 const LETTERS=["أ","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"];
-const BANK={
-"أ":[["ما الحيوان الملقب بملك الغابة؟","أسد"],["ما أكبر قارات العالم مساحة؟","آسيا"]],
-"ب":[["ما عاصمة لبنان؟","بيروت"],["ما المسطح المائي الذي يفصل الجزيرة العربية عن أفريقيا؟","بحر الأحمر"]],
-"ت":[["ما عاصمة الجمهورية التونسية؟","تونس"],["ما الدولة التي تقع فيها مدينة إسطنبول؟","تركيا"]],
-"ث":[["ما الحيوان المعروف بالمكر في كثير من الحكايات؟","ثعلب"],["ما اسم العدد الذي يأتي بعد اثنين؟","ثلاثة"]],
-"ج":[["ما المدينة السعودية المعروفة بعروس البحر الأحمر؟","جدة"],["ما الشهر الهجري الذي يأتي بعد ربيع الآخر؟","جمادى الأولى"]],
-"ح":[["ما أكبر حيوان معروف على الأرض؟","حوت أزرق"],["ما المعدن الأساسي الذي يدخل في صناعة الفولاذ؟","حديد"]],
-"خ":[["ما الخضار الأخضر الطويل الذي يؤكل في السلطة؟","خيار"],["ما نوع من التوابل يصنع من بذور صفراء ويستخدم كصلصة؟","خردل"]],
-"د":[["ما عاصمة سوريا؟","دمشق"],["ما الحيوان البحري الذكي المعروف بقفزاته؟","دلفين"]],
-"ذ":[["ما المعدن النفيس الأصفر؟","ذهب"],["ما الحيوان البري الذي يعيش في مجموعات ويشبه الكلب؟","ذئب"]],
-"ر":[["ما عاصمة المملكة العربية السعودية؟","رياض"],["ما الشهر الهجري الذي يصومه المسلمون؟","رمضان"]],
-"ز":[["ما عاصمة كرواتيا؟","زغرب"],["ما الحيوان الأطول رقبة بين الحيوانات البرية؟","زرافة"]],
-"س":[["ما عاصمة كوريا الجنوبية؟","سيول"],["ما المادة البيضاء الحلوة المستخدمة في التحلية؟","سكر"]],
-"ش":[["ما النجم الذي يضيء الأرض نهارًا؟","شمس"],["ما الشهر الهجري الذي يسبق رمضان؟","شعبان"]],
-"ص":[["ما الطائر الجارح الشهير في الجزيرة العربية؟","صقر"],["ما الصوت الذي نسمعه عند انعكاس الصوت من سطح بعيد؟","صدى"]],
-"ض":[["ما الحيوان البرمائي الذي يقفز ويعيش قرب الماء؟","ضفدع"],["ما الأسنان الخلفية المستخدمة في طحن الطعام؟","ضروس"]],
-"ط":[["ما عاصمة اليابان؟","طوكيو"],["ما الطائر المعروف بريشه الملون ومروحة ذيله؟","طاووس"]],
-"ظ":[["ما عكس النور؟","ظلام"],["ما عكس الباطن؟","ظاهر"]],
-"ع":[["ما عاصمة الأردن؟","عمان"],["ما جمع كلمة عين؟","عيون"]],
-"غ":[["ما الحيوان الصحراوي الرشيق ذو القرون؟","غزال"],["ما المادة التي لا شكل ثابت لها وتملأ الوعاء؟","غاز"]],
-"ف":[["ما الحيوان الضخم المعروف بخرطومه؟","فيل"],["ما الفاكهة الحمراء الصغيرة التي تحمل بذورها على سطحها؟","فراولة"]],
-"ق":[["ما عاصمة مصر؟","قاهرة"],["ما العضو الذي يضخ الدم في جسم الإنسان؟","قلب"]],
-"ك":[["ما عاصمة دولة الكويت؟","كويت"],["ما الحيوان الأليف المعروف بوفائه للإنسان؟","كلب"]],
-"ل":[["ما الدولة العربية التي عاصمتها بيروت؟","لبنان"],["ما الجزء المرئي المضيء من النار؟","لهب"]],
-"م":[["ما الكوكب المعروف بالكوكب الأحمر؟","مريخ"],["ما السائل الذي يغطي معظم سطح الأرض؟","ماء"]],
-"ن":[["ما الغاز الأكثر وجودًا في الغلاف الجوي للأرض؟","نيتروجين"],["ما الحيوان المفترس المخطط من فصيلة السنوريات؟","نمر"]],
-"ه":[["ما عاصمة فنلندا؟","هلسنكي"],["ما الجهاز المحمول المستخدم للاتصال والتطبيقات؟","هاتف"]],
-"و":[["ما وحدة قياس القدرة الكهربائية؟","وات"],["ما الحيوان الكبير ذو القرن على أنفه؟","وحيد القرن"]],
-"ي":[["ما الدولة الآسيوية التي عاصمتها طوكيو؟","يابان"],["ما الجهة المقابلة لليسار؟","يمين"]]
-};
+let BANK={};
+let bankReady=false;
+async function loadQuestions(){
+  try{
+    const res=await fetch("./questions.json",{cache:"no-store"});
+    if(!res.ok)throw new Error("questions.json "+res.status);
+    const data=await res.json();
+    if(!data||!Object.keys(data).length)throw new Error("empty questions bank");
+    BANK=data;
+    bankReady=true;
+    return true;
+  }catch(e){
+    console.error("Questions bank load failed",e);
+    bankReady=false;
+    return false;
+  }
+}
 
 let uid="",role="",room="",roomRef=null,state=null,winnerRepairing=false;
 const $=id=>document.getElementById(id);
@@ -405,8 +392,17 @@ function show(id){["home","join","lobby","gameScreen"].forEach(x=>$(x).classList
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));let t=a[i];a[i]=a[j];a[j]=t}return a}
 function code4(){return String(Math.floor(1000+Math.random()*9000))}
 function newBoard(){return shuffle(LETTERS).slice(0,25).map((letter,i)=>({id:i,letter:letter,owner:"neutral"}))}
-function questionFor(letter){let list=BANK[letter]||[];return list[Math.floor(Math.random()*list.length)]||["سؤال غير متوفر","—"]}
-function gameState(){return {phase:"playing",board:newBoard(),current:null,winner:null,startedAt:firebase.database.ServerValue.TIMESTAMP}}
+function questionFor(letter,usedQuestions){
+  const list=BANK[letter]||[];
+  if(!list.length)return {item:{id:"missing",q:"سؤال غير متوفر",a:"—"},reset:false};
+  const used=(usedQuestions&&usedQuestions[letter])||{};
+  let choices=list.filter(x=>!used[x.id]);
+  let reset=false;
+  if(!choices.length){choices=list.slice();reset=true}
+  const item=choices[Math.floor(Math.random()*choices.length)];
+  return {item,reset};
+}
+function gameState(){return {phase:"playing",board:newBoard(),current:null,winner:null,usedQuestions:{},startedAt:firebase.database.ServerValue.TIMESTAMP}}
 function enterGameMode(){
   document.body.classList.add("game-mode");
   if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
@@ -414,6 +410,8 @@ function enterGameMode(){
 }
 function setStatus(t){$("status").textContent=t||""}
 function roomError(e){console.error(e);alert("تعذر الاتصال بالغرفة. تأكد من Firebase Rules لمسار familyLettersRooms.");}
+
+loadQuestions();
 
 firebase.initializeApp(FIREBASE_CONFIG);
 firebase.auth().signInAnonymously().catch(e=>{$("net").textContent="Firebase: خطأ"});
@@ -446,12 +444,22 @@ $("doJoin").onclick=async()=>{
 };
 $("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(room);$("copyBtn").textContent="تم النسخ ✓"}catch(e){}};
 $("startBtn").onclick=async()=>{
-  try{await roomRef.update(gameState());enterGameMode();show("gameScreen")}catch(e){roomError(e)}
+  try{
+    if(!bankReady){
+      const ok=await loadQuestions();
+      if(!ok)return alert("تعذر تحميل بنك الأسئلة. حدّث الصفحة وحاول مرة أخرى.");
+    }
+    await roomRef.update(gameState());enterGameMode();show("gameScreen")
+  }catch(e){roomError(e)}
 };
 $("closeBtn").onclick=async()=>{if(roomRef)await roomRef.remove();location.reload()};
 $("exitBtn").onclick=async()=>{if(roomRef)await roomRef.remove();location.reload()};
 $("newGameBtn").onclick=async()=>{
   if(!confirm("بدء لوحة جديدة؟"))return;
+  if(!bankReady){
+    const ok=await loadQuestions();
+    if(!ok)return alert("تعذر تحميل بنك الأسئلة.");
+  }
   await roomRef.update(gameState());
 };
 
@@ -511,9 +519,20 @@ function renderBoard(){
 }
 async function selectCell(i){
   if(role!=="host"||state.current||state.winner)return;
-  let cell=state.board[i];if(!cell||cell.owner!=="neutral")return;
-  let qa=questionFor(cell.letter);
-  await roomRef.child("current").set({cell:i,letter:cell.letter,q:qa[0],a:qa[1],revealed:false});
+  const cell=state.board[i];
+  if(!cell||cell.owner!=="neutral")return;
+  if(!bankReady){
+    const ok=await loadQuestions();
+    if(!ok)return alert("تعذر تحميل بنك الأسئلة.");
+  }
+  const picked=questionFor(cell.letter,state.usedQuestions||{});
+  const item=picked.item;
+  const letterUsedRef=roomRef.child("usedQuestions").child(cell.letter);
+  if(picked.reset)await letterUsedRef.remove();
+  const updates={};
+  updates["current"]={cell:i,letter:cell.letter,q:item.q,a:item.a,qid:item.id,revealed:false};
+  updates["usedQuestions/"+cell.letter+"/"+item.id]=true;
+  await roomRef.update(updates);
 }
 function renderQuestion(){
   let q=state.current;
