@@ -560,7 +560,7 @@ function hasPath(board,team){
   }
   return false;
 }
-$("winnerClose").onclick=()=>$("winner").classList.add("hidden");
+function detectWinner(board){\n  if(hasPath(board,"green"))return "green";\n  if(hasPath(board,"red"))return "red";\n  return null;\n}\n$("winnerClose").onclick=()=>$("winner").classList.add("hidden");
 </script>
 </body>
 </html>
