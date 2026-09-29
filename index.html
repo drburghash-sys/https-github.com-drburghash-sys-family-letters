@@ -112,6 +112,152 @@ input{width:100%;border:1px solid #31506f;background:#071321;color:white;border-
  .btn{padding:8px 9px;border-radius:11px;font-size:13px}.host-controls{gap:5px;margin-top:6px}
  .status{padding:5px 7px;margin-top:5px;font-size:11px}
 }
+
+/* V1.1 — interlocked team edges + fast winner flash */
+.board-wrap{
+  position:relative;
+  margin:auto;
+  width:min(100%,760px);
+  padding:36px 54px;
+}
+.board{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:2px}
+
+.edge-top,.edge-bottom,.edge-left,.edge-right{
+  position:absolute;
+  z-index:0;
+  filter:drop-shadow(0 0 10px rgba(0,0,0,.45));
+}
+.edge-top,.edge-bottom{
+  left:78px;
+  right:78px;
+  height:30px;
+  background:linear-gradient(180deg,#66ff9a 0%,#24dc65 44%,#0a8b3b 100%);
+  border:2px solid #86ffb1;
+  box-shadow:0 0 18px #22c55ebb,inset 0 0 8px #d9ffe866;
+}
+.edge-top{
+  top:10px;
+  clip-path:polygon(
+    0 0,100% 0,100% 52%,
+    94% 52%,90% 100%,86% 52%,
+    74% 52%,70% 100%,66% 52%,
+    54% 52%,50% 100%,46% 52%,
+    34% 52%,30% 100%,26% 52%,
+    14% 52%,10% 100%,6% 52%,
+    0 52%
+  );
+}
+.edge-bottom{
+  bottom:10px;
+  clip-path:polygon(
+    0 48%,6% 48%,10% 0,14% 48%,
+    26% 48%,30% 0,34% 48%,
+    46% 48%,50% 0,54% 48%,
+    66% 48%,70% 0,74% 48%,
+    86% 48%,90% 0,94% 48%,
+    100% 48%,100% 100%,0 100%
+  );
+}
+.edge-left,.edge-right{
+  top:54px;
+  bottom:54px;
+  width:32px;
+  background:linear-gradient(90deg,#ff737d 0%,#ef3340 45%,#98111b 100%);
+  border:2px solid #ff9198;
+  box-shadow:0 0 18px #ef3340bb,inset 0 0 8px #ffd3d566;
+}
+.edge-left{
+  left:14px;
+  clip-path:polygon(
+    0 0,100% 0,
+    100% 6%,42% 12%,100% 18%,
+    100% 28%,42% 34%,100% 40%,
+    100% 50%,42% 56%,100% 62%,
+    100% 72%,42% 78%,100% 84%,
+    100% 94%,42% 100%,0 100%
+  );
+}
+.edge-right{
+  right:14px;
+  clip-path:polygon(
+    0 0,100% 0,
+    58% 12%,0 6%,0 18%,
+    58% 34%,0 28%,0 40%,
+    58% 56%,0 50%,0 62%,
+    58% 78%,0 72%,0 84%,
+    58% 100%,0 94%,100% 100%
+  );
+}
+
+@keyframes winnerFlashGreen{
+  0%,49%{
+    background:linear-gradient(145deg,#fff2a6,#d8ac3b 62%,#9c741c);
+    color:#342400;
+    text-shadow:0 1px 0 #fff8;
+    box-shadow:inset 0 0 0 3px #7d5d1c,0 0 10px #f7d77466;
+    filter:brightness(1);
+  }
+  50%,100%{
+    background:linear-gradient(145deg,#6dff9d,#14b953 60%,#087437);
+    color:#fff;
+    text-shadow:0 2px 3px #063;
+    box-shadow:inset 0 0 0 3px #0b6d35,0 0 24px #22c55eee;
+    filter:brightness(1.22);
+  }
+}
+@keyframes winnerFlashRed{
+  0%,49%{
+    background:linear-gradient(145deg,#fff2a6,#d8ac3b 62%,#9c741c);
+    color:#342400;
+    text-shadow:0 1px 0 #fff8;
+    box-shadow:inset 0 0 0 3px #7d5d1c,0 0 10px #f7d77466;
+    filter:brightness(1);
+  }
+  50%,100%{
+    background:linear-gradient(145deg,#ff6f79,#dc2231 60%,#8c0e18);
+    color:#fff;
+    text-shadow:0 2px 3px #500;
+    box-shadow:inset 0 0 0 3px #8c0e18,0 0 24px #ef3340ee;
+    filter:brightness(1.22);
+  }
+}
+.board.winner-green .hex{animation:winnerFlashGreen .34s linear infinite!important}
+.board.winner-red .hex{animation:winnerFlashRed .34s linear infinite!important}
+
+/* Keep the victory message visible without hiding the flashing board */
+.winner{
+  background:rgba(2,6,13,.18)!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  padding-top:max(60px,8vh)!important;
+  pointer-events:none;
+}
+.winner-box{
+  width:min(520px,86vw)!important;
+  padding:16px 22px!important;
+  border-radius:20px!important;
+  background:rgba(9,20,35,.88)!important;
+  backdrop-filter:blur(8px);
+  box-shadow:0 0 38px #f6cd5866!important;
+  pointer-events:auto;
+}
+.winner-box h2{font-size:clamp(28px,5vw,48px)!important;margin:4px 0 10px!important}
+
+@media(max-width:640px){
+  .board-wrap{padding:30px 39px}
+  .edge-top,.edge-bottom{left:50px;right:50px;height:22px}
+  .edge-top{top:6px}.edge-bottom{bottom:6px}
+  .edge-left,.edge-right{top:38px;bottom:38px;width:22px}
+  .edge-left{left:7px}.edge-right{right:7px}
+}
+@media(orientation:landscape) and (max-height:650px){
+  .board-wrap{width:min(100%,650px);padding:24px 42px}
+  .edge-top,.edge-bottom{left:56px;right:56px;height:22px}
+  .edge-top{top:4px}.edge-bottom{bottom:4px}
+  .edge-left,.edge-right{top:34px;bottom:34px;width:23px}
+  .edge-left{left:8px}.edge-right{right:8px}
+}
+
 </style>
 </head>
 <body>
